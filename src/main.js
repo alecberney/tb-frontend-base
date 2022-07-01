@@ -2,62 +2,33 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import * as Keycloak from 'keycloak-js';
+import authentication from "@/plugins/keycloak";
+import updateToken from "/src/middleware/keycloakUpdateToken";
 
 Vue.config.productionTip = false
 
-let keycloak = Keycloak({
-  url: `${process.env.VUE_APP_CLOAK_URL}`,
-  realm: `${process.env.VUE_APP_CLOAK_REALM}`,
-  clientId: `${process.env.VUE_APP_CLOAK_CLIENT_ID}`
-});
+Vue.use(authentication);
 
-keycloak.init({ onLoad: 'login-required' }).then((auth) => {
-  if (!auth) {
-    window.location.reload();
-  } else {
-    //Vue.$log.info("Authenticated");
-    console.log('Authenticated');
+// keycloak tuto followed:
+// https://medium.com/js-dojo/authentication-made-easy-in-vue-js-with-keycloak-c03c7fff67bb
+// https://davidtruxall.com/secure-a-vue-js-app-with-keycloak/
+// https://vuejs.org/guide/reusability/plugins.html#writing-a-plugin
 
-    new Vue({
-      el: '#app',
-      router,
-      store,
-      render: h => h(App, { props: { keycloak: keycloak } })
+const KEYCLOAK_ON_LOAD = 'login-required';
+
+Vue.$keycloak
+    .init({
+        onLoad: `${KEYCLOAK_ON_LOAD}`,
+        //checkLoginIframe: false, // Good for debugging if refresh bug -> not in prod!
+        checkLoginIframeInterval: 600, // Every 10 min
     })
-  }
-
-
-//Token Refresh
-  setInterval(() => {
-    keycloak.updateToken(30000).then((refreshed) => {
-      if (refreshed) {
-        //Vue.$log.info('Token refreshed' + refreshed);
-        console.log('Token refreshed ' + refreshed);
-      } else {
-        //Vue.$log.warn('Token not refreshed, valid for '
-            //+ Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
-        console.log('Token not refreshed, valid for '
-            + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000)
-            + ' seconds');
-      }
-    }).catch(() => {
-      //Vue.$log.error('Failed to refresh token');
-      console.log('Failed to refresh token');
+    .then(() => { //.then((authenticated) => {
+        new Vue({
+            router,
+            store,
+            render: h => h(App),
+      }).$mount('#app');
+        window.onfocus = () => {
+            updateToken();
+        };
     });
-  }, 30000)
-
-}).catch(() => {
-  //Vue.$log.error("Authenticated Failed");
-  console.log('Authenticated Failed');
-});
-
-export {
-  keycloak
-}
-
-/*new Vue({
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app')*/

@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <SideNav/>
+    <SideNav />
     <router-view/>
+    <p>Connected user: {{ this.$store.getters.getUser }}</p>
   </div>
 </template>
 
@@ -29,12 +30,20 @@ nav a.router-link-exact-active {
 </style>
 <script>
 import SideNav from "@/components/SideNav";
+import { mapActions } from "vuex"
+
 export default {
   components: {
     SideNav
   },
-  props: {
+  /*props: {
     keycloak: Object
+  },*/
+  methods: {
+    ...mapActions(["retrieveUser"]),
+  },
+  created() {
+    this.retrieveUser(this.$keycloak.idTokenParsed.preferred_username)
   },
 }
 </script>

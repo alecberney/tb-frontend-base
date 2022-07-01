@@ -28,8 +28,9 @@ const routes = [
             {
                 path: "unassigned-jobs",
                 component: () => import("./views/app/jobs/UnassignedJobs"),
-                //beforeEnter: () => { return true }
-                // TODO: verify it's admin or worker
+                /*beforeEnter: (to, from, next) => {
+                    next((this.$store.getters.userIsWorker || this.$store.getters.userIsAdmin) ? {} : '/')
+                }*/
             },
             {
                 path: "job-categories",
@@ -52,5 +53,8 @@ const router = new VueRouter({
     routes,
     mode: "history"
 });
+
+/*router.beforeEach((to, from, next) => {
+})*/
 
 export default router;
