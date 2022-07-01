@@ -1,19 +1,18 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
 import * as Keycloak from 'keycloak-js';
 
 Vue.config.productionTip = false
 
-let initOptions = {
+let keycloak = Keycloak({
   url: `${process.env.VUE_APP_CLOAK_URL}`,
   realm: `${process.env.VUE_APP_CLOAK_REALM}`,
-  clientId: `${process.env.VUE_APP_CLOAK_CLIENT_ID}`,
-  onLoad: 'login-required'
-}
+  clientId: `${process.env.VUE_APP_CLOAK_CLIENT_ID}`
+});
 
-let keycloak = Keycloak(initOptions);
-
-keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
+keycloak.init({ onLoad: 'login-required' }).then((auth) => {
   if (!auth) {
     window.location.reload();
   } else {
@@ -22,6 +21,8 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
 
     new Vue({
       el: '#app',
+      router,
+      store,
       render: h => h(App, { props: { keycloak: keycloak } })
     })
   }
@@ -29,7 +30,7 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
 
 //Token Refresh
   setInterval(() => {
-    keycloak.updateToken(1000).then((refreshed) => {
+    keycloak.updateToken(30000).then((refreshed) => {
       if (refreshed) {
         //Vue.$log.info('Token refreshed' + refreshed);
         console.log('Token refreshed ' + refreshed);
@@ -44,13 +45,19 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
       //Vue.$log.error('Failed to refresh token');
       console.log('Failed to refresh token');
     });
-  }, 6000)
+  }, 30000)
 
 }).catch(() => {
   //Vue.$log.error("Authenticated Failed");
   console.log('Authenticated Failed');
 });
 
+export {
+  keycloak
+}
+
 /*new Vue({
+  router,
+  store,
   render: h => h(App),
 }).$mount('#app')*/
