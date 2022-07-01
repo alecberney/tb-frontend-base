@@ -34,35 +34,34 @@ DRIBBBLE: https://dribbble.com/shots/4330167-404-Page-Lost-In-Space
         <button
           class="btn-go-home"
           target="_blank"
-          @click="$router.replace('/')"
-        >
+          @click="$router.replace('/')">
           RETOUR
         </button>
       </div>
       <div class="objects">
         <img
           class="object_rocket"
-          src="/assets/img/404/rocket.svg"
+          src="/src/assets/img/404/rocket.svg"
           width="40px"
-        />
+         alt=""/>
         <div class="earth-moon">
           <img
             class="object_earth"
-            src="/assets/img/404/earth.svg"
+            src="/src/assets/img/404/earth.svg"
             width="100px"
-          />
+           alt=""/>
           <img
             class="object_moon"
-            src="/assets/img/404/moon.svg"
+            src="/src/assets/img/404/moon.svg"
             width="80px"
-          />
+           alt=""/>
         </div>
         <div class="box_astronaut">
           <img
             class="object_astronaut"
-            src="/assets/img/404/astronaut.svg"
+            src="/src/assets/img/404/astronaut.svg"
             width="140px"
-          />
+           alt=""/>
         </div>
       </div>
       <div class="glowing_stars">

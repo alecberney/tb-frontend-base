@@ -58,7 +58,7 @@ export const jobs = {
     // The returned array contains the files and the (timeline) events of each job
     retrieveJobs(context) {
       return axios
-          .get(`${JOBS_ROUTE}/user/${this.getters.getUser.id}`)
+          .get(`${JOBS_ROUTE}/user/${this.getters.getUser.username}`)
           .then((response) => {
             context.commit("setJobs", response.data)
           })

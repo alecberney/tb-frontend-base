@@ -40,6 +40,10 @@ const routes = [
                 path: "settings",
                 component: () => import("./views/app/user/UserSettings"),
             },
+            {
+                path: "token",
+                component: () => import("./views/app/token/TokenData"),
+            },
         ]
     },
     {
