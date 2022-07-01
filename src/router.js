@@ -13,14 +13,9 @@ const routes = [
     },
     {
         path: `${APP_ROUTE}`,
-        //component: () => import("./views/app"),
         component: () => import("./App"),
         redirect: `${APP_ROUTE}/my-jobs`,
         children: [
-            {
-                path: "login",
-                component: () => import("./views/app/LoginKeycloak"),
-            },
             {
               path: "new-job",
               component: () => import("./views/app/jobs/NewJob"),
@@ -33,9 +28,9 @@ const routes = [
             {
                 path: "unassigned-jobs",
                 component: () => import("./views/app/jobs/UnassignedJobs"),
-                beforeEnter: (to, from, next) => {
-                    next((store.getters.userIsWorker || store.getters.userIsAdmin) ? {} : '/')
-                }
+                /*beforeEnter: (to, from, next) => {
+                    next((store.getters.userIsWorker || store.getters.userIsAdmin) ? {} : '/');
+                }*/
             },
             {
                 path: "job-categories",
@@ -63,16 +58,30 @@ const router = new VueRouter({
     mode: "history"
 });
 
-/*router.beforeEach((to, from, next) => {
-    if (!Vue.$keycloak.authenticated) {
-        Vue.$keycloak.login();
+// Doesn't work
+const WORKER_PROTECTED_ROUTES = [
+    "unassigned-jobs"
+]
+
+router.beforeEach((to, from, next) => {
+    /*if (to.name === "login") {
+        next();
     }
 
-    if (to.name === "unassigned-jobs" && (this.$store.getters.userIsAdmin || this.$store.getters.userIsWorker )) {
+    if (store.getters.getUser == null) {
+        console.log('need to connect');
+        next({name: '/app/login'});
+    }*/
+
+    if (store.getters.userIsAdmin) {
+        next();
+    }
+
+    if (WORKER_PROTECTED_ROUTES.includes(to.name) && store.getters.userIsWorker) {
         next();
     } else {
-        next('/');
+        next({name: '/'});
     }
-})*/
+})
 
 export default router;
