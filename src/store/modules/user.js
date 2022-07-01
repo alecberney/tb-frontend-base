@@ -18,9 +18,9 @@ export const user = {
   },
   getters: {
       getUser: state => state.user,
-      userIsWorker: state => state.user.roles.contains(WORKER_ROLE),
-      userIsAdmin: state => state.user.roles.contains(ADMIN_ROLE),
-      userIsClient: state => state.user.roles.contains(CLIENT_ROLE),
+      userIsWorker: state => state.user.roles.includes(WORKER_ROLE),
+      userIsAdmin: state => state.user.roles.includes(ADMIN_ROLE),
+      userIsClient: state => state.user.roles.includes(CLIENT_ROLE),
   },
   actions: {
     // Self-explanatory

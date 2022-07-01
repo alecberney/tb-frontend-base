@@ -22,8 +22,6 @@ export default new Vuex.Store({
             dialog: false,
             initialJob: null,
         },*/
-        keycloakToken: null,
-        keycloakParsedToken: null,
     },
 
     mutations: {

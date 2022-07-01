@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "./store";
 
 Vue.use(VueRouter);
 
@@ -17,6 +18,10 @@ const routes = [
         redirect: `${APP_ROUTE}/my-jobs`,
         children: [
             {
+                path: "login",
+                component: () => import("./views/app/LoginKeycloak"),
+            },
+            {
               path: "new-job",
               component: () => import("./views/app/jobs/NewJob"),
             },
@@ -28,9 +33,9 @@ const routes = [
             {
                 path: "unassigned-jobs",
                 component: () => import("./views/app/jobs/UnassignedJobs"),
-                /*beforeEnter: (to, from, next) => {
-                    next((this.$store.getters.userIsWorker || this.$store.getters.userIsAdmin) ? {} : '/')
-                }*/
+                beforeEnter: (to, from, next) => {
+                    next((store.getters.userIsWorker || store.getters.userIsAdmin) ? {} : '/')
+                }
             },
             {
                 path: "job-categories",
@@ -59,6 +64,15 @@ const router = new VueRouter({
 });
 
 /*router.beforeEach((to, from, next) => {
+    if (!Vue.$keycloak.authenticated) {
+        Vue.$keycloak.login();
+    }
+
+    if (to.name === "unassigned-jobs" && (this.$store.getters.userIsAdmin || this.$store.getters.userIsWorker )) {
+        next();
+    } else {
+        next('/');
+    }
 })*/
 
 export default router;
